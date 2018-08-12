@@ -23,8 +23,6 @@ import ImGui 1.0
 Rectangle {
     id: root
 
-    ... // usual Qt Quick stuff
-
     ImGui {
         objectName: "imgui"
         anchors.fill: parent
@@ -41,7 +39,7 @@ int main(int argc, char *argv[])
     viewer.setSource(QUrl("qrc:/main.qml"));
 
     ImGuiItem *imguiItem = viewer.rootObject()->findChild<ImGuiItem *>("imgui");
-    QObject::connect(imguiItem, &ImGuiItem::frame, imguiItem, [&gui] {
+    QObject::connect(imguiItem, &ImGuiItem::frame, imguiItem, [] {
         ImGui::Text("Hello, world!");
     });
 
