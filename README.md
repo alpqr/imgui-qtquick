@@ -23,6 +23,8 @@ import ImGui 1.0
 Rectangle {
     id: root
 
+    ...
+
     ImGui {
         objectName: "imgui"
         anchors.fill: parent
