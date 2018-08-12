@@ -267,6 +267,8 @@ QSGNode *ImGuiItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeDa
     n->m_localSize = size();
     n->m_frameDesc = m_frameDesc;
 
+    n->markDirty(QSGNode::DirtyMaterial);
+
     return n;
 }
 
@@ -295,6 +297,7 @@ void ImGuiItem::initialize()
     m_frameDesc.textures.append(wrapperImg.copy());
     io.Fonts->SetTexID(reinterpret_cast<ImTextureID>(quintptr(m_frameDesc.textures.count() - 1)));
 
+    // the imgui "render loop"
     m_c = connect(m_w, &QQuickWindow::afterAnimating, m_w, [this] {
         polish();
     });
