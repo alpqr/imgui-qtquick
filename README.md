@@ -1,7 +1,7 @@
 Integration of [Dear ImGui](https://github.com/ocornut/imgui) 1.62 with [Qt Quick](http://doc.qt.io/qt-5/qtquick-index.html)
 
 There are multiple ways to do this. Here we chose to expose a QQuickItem backed
-by a QSGRenderNode (that issues the draw calls directly, no immediate render
+by a QSGRenderNode (that issues the draw calls directly, no intermediate render
 target; both threaded and basic render loops should work).
 
 Alternatives would be to do it overlay-style connected to
