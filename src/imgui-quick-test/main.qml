@@ -93,6 +93,18 @@ Rectangle {
             focus: true // for keybord input
             clip: true // to get the imgui contents scissored to the item's bounds
             // note that transforms other than 2D translation are NOT supported
+
+            Rectangle {
+                color: "blue"
+                anchors.centerIn: parent
+                width: 50
+                height: 50
+                opacity: 1 // test if the blue rect shows up on top when it is part of the opaque pass
+//                NumberAnimation on opacity {
+//                    from: 1; to: 0; duration: 5000
+//                    loops: Animation.Infinite
+//                }
+            }
         }
     }
 }

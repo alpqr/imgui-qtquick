@@ -185,10 +185,16 @@ void ImGuiRenderer::render(const RenderState *state)
         m_ibo->create();
     }
 
+    // non-premultiplied alpha
     f->glEnable(GL_BLEND);
     f->glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // no backface culling
     f->glDisable(GL_CULL_FACE);
-    f->glDisable(GL_DEPTH_TEST);
+    // still need depth test to test against the items rendered in the opaque pass
+    f->glEnable(GL_DEPTH_TEST);
+    // but no need to write out anything to the depth buffer
+    f->glDepthMask(GL_FALSE);
+    // will always scissor
     f->glEnable(GL_SCISSOR_TEST);
 
     if (m_vao->isCreated())
