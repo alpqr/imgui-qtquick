@@ -194,6 +194,8 @@ void ImGuiRenderer::render(const RenderState *state)
     f->glEnable(GL_DEPTH_TEST);
     // but no need to write out anything to the depth buffer
     f->glDepthMask(GL_FALSE);
+    // do not write out alpha
+    f->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_FALSE);
     // will always scissor
     f->glEnable(GL_SCISSOR_TEST);
 
@@ -231,6 +233,9 @@ void ImGuiRenderer::render(const RenderState *state)
             f->glDrawElements(GL_TRIANGLES, cmd.elemCount, GL_UNSIGNED_SHORT, cmd.indexOffset);
         }
     }
+
+    // restore this one, just in case; the others are reported from changedStates()
+    f->glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 }
 
 QSGRenderNode::StateFlags ImGuiRenderer::changedStates() const
