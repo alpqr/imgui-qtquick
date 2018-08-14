@@ -276,8 +276,7 @@ QSGNode *ImGuiItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeDa
     // data prepared in the polish step on the main thread.
     const QPointF sceneTopLeft = mapToScene(QPointF(0, 0));
     QQuickWindow *w = window();
-    const QSize outputSize = w->renderTargetId() ? w->renderTargetSize() : w->size() * m_dpr;
-    n->m_scenePixelPosBottomLeft = QPointF(sceneTopLeft.x(), outputSize.height() - (sceneTopLeft.y() + height())) * m_dpr;
+    n->m_scenePixelPosBottomLeft = QPointF(sceneTopLeft.x(), w->height() - (sceneTopLeft.y() + height())) * m_dpr;
     n->m_pixelSize = size() * m_dpr;
     n->m_itemSize = size();
     n->m_frameDesc = m_frameDesc;
