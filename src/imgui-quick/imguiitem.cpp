@@ -274,7 +274,7 @@ QSGNode *ImGuiItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeDa
 
     // This is on the render thread with the main thread blocked. Synchronize the
     // data prepared in the polish step on the main thread.
-    n->m_scenePos = mapToScene(position());
+    n->m_scenePos = mapToScene(QPointF(0, 0));
     n->m_localSize = size();
     n->m_frameDesc = m_frameDesc;
 
