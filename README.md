@@ -29,7 +29,6 @@ Rectangle {
         objectName: "imgui"
         anchors.fill: parent
         focus: true
-        clip: true
     }
 }
 

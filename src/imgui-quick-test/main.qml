@@ -71,6 +71,7 @@ Rectangle {
     }
 
     Rectangle {
+        id: ctr
         border.width: 4
         border.color: "black"
         color: "transparent"
@@ -78,20 +79,60 @@ Rectangle {
         x: 50
         y: 50
         width: parent.width - 100
-        height: parent.height - 100
+        height: parent.height - 200 // exercise scissoring a bit by having topY != bottomY
 
-//        NumberAnimation on x {
-//            from: 50
-//            to: 0
-//            duration: 3000
-//            loops: Animation.Infinite
-//        }
+        SequentialAnimation {
+            id: moveAnim
+            NumberAnimation {
+                target: ctr
+                property: "x"
+                from: 50
+                to: 0
+                duration: 1000
+            }
+            NumberAnimation {
+                target: ctr
+                property: "x"
+                from: 0
+                to: ctr.parent.width - ctr.width
+                duration: 1000
+            }
+            NumberAnimation {
+                target: ctr
+                property: "y"
+                from: 50
+                to: 0
+                duration: 1000
+            }
+            NumberAnimation {
+                target: ctr
+                property: "y"
+                from: 0
+                to: ctr.parent.height - ctr.height
+                duration: 1000
+            }
+            NumberAnimation {
+                target: ctr
+                property: "y"
+                from: ctr.parent.height - ctr.height
+                to: 50
+                duration: 1000
+            }
+            NumberAnimation {
+                target: ctr
+                property: "x"
+                from: ctr.parent.width - ctr.width
+                to: 50
+                duration: 1000
+            }
+            loops: Animation.Infinite
+            running: true
+        }
 
         ImGui {
             objectName: "imgui"
             anchors.fill: parent
             focus: true // for keybord input
-            clip: true // to get the imgui contents scissored to the item's bounds
             // note that transforms other than 2D translation are NOT supported
 
             Rectangle {

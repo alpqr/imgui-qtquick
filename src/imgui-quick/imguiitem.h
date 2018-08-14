@@ -92,8 +92,9 @@ public:
     };
 
 private:
-    QPointF m_scenePos;
-    QSizeF m_localSize;
+    QPointF m_scenePixelPosBottomLeft;
+    QSizeF m_pixelSize;
+    QSizeF m_itemSize;
     FrameDesc m_frameDesc;
     QVector<QOpenGLTexture *> m_textures;
     QOpenGLShaderProgram *m_program = nullptr;

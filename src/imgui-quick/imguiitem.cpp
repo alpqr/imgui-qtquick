@@ -215,10 +215,10 @@ void ImGuiRenderer::render(const RenderState *state)
         setupVertAttrs();
 
         for (const FrameDesc::Cmd &cmd : e.cmds) {
-            qreal sx = cmd.scissorBottomLeft.x() + m_scenePos.x();
-            qreal sy = cmd.scissorBottomLeft.y() + m_scenePos.y();
-            qreal sw = cmd.scissorSize.width();
-            qreal sh = cmd.scissorSize.height();
+            qreal sx = cmd.scissorBottomLeft.x() + m_scenePixelPosBottomLeft.x();
+            qreal sy = cmd.scissorBottomLeft.y() + m_scenePixelPosBottomLeft.y();
+            qreal sw = qMin(cmd.scissorSize.width(), m_pixelSize.width());
+            qreal sh = qMin(cmd.scissorSize.height(), m_pixelSize.height());
             if (state->scissorEnabled()) { // when the item has clip: true
                 const QRectF r = state->scissorRect(); // bottom-left already
                 sx = qMax(sx, r.x());
@@ -250,7 +250,7 @@ QSGRenderNode::RenderingFlags ImGuiRenderer::flags() const
 
 QRectF ImGuiRenderer::rect() const
 {
-    return QRect(0, 0, m_localSize.width(), m_localSize.height());
+    return QRect(0, 0, m_itemSize.width(), m_itemSize.height());
 }
 
 ImGuiItem::ImGuiItem(QQuickItem *parent)
@@ -274,8 +274,12 @@ QSGNode *ImGuiItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeDa
 
     // This is on the render thread with the main thread blocked. Synchronize the
     // data prepared in the polish step on the main thread.
-    n->m_scenePos = mapToScene(QPointF(0, 0));
-    n->m_localSize = size();
+    const QPointF sceneTopLeft = mapToScene(QPointF(0, 0));
+    QQuickWindow *w = window();
+    const QSize outputSize = w->renderTargetId() ? w->renderTargetSize() : w->size() * m_dpr;
+    n->m_scenePixelPosBottomLeft = QPointF(sceneTopLeft.x(), outputSize.height() - (sceneTopLeft.y() + height())) * m_dpr;
+    n->m_pixelSize = size() * m_dpr;
+    n->m_itemSize = size();
     n->m_frameDesc = m_frameDesc;
 
     n->markDirty(QSGNode::DirtyMaterial);
