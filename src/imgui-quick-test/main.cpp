@@ -55,6 +55,7 @@
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     qputenv("QSG_INFO", "1");
     QGuiApplication app(argc, argv);
 
