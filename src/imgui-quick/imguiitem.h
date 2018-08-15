@@ -95,6 +95,7 @@ private:
     QPointF m_scenePixelPosBottomLeft;
     QSizeF m_pixelSize;
     QSizeF m_itemSize;
+    float m_dpr;
     FrameDesc m_frameDesc;
     QVector<QOpenGLTexture *> m_textures;
     QOpenGLShaderProgram *m_program = nullptr;

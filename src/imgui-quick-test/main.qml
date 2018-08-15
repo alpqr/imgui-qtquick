@@ -70,6 +70,14 @@ Rectangle {
         text: "Qt Quick + ImGui"
     }
 
+    Text {
+        text: "Toggle animation"
+        MouseArea {
+            anchors.fill: parent
+            onClicked: moveAnim.running = !moveAnim.running
+        }
+    }
+
     Rectangle {
         id: ctr
         border.width: 4
@@ -126,7 +134,7 @@ Rectangle {
                 duration: 1000
             }
             loops: Animation.Infinite
-            running: true
+            running: false
         }
 
         ImGui {

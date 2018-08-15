@@ -203,7 +203,9 @@ void ImGuiRenderer::render(const RenderState *state)
         m_vao->bind();
 
     m_program->bind();
-    m_program->setUniformValue(m_mvpLoc, *state->projectionMatrix() * *matrix());
+    QMatrix4x4 m = *state->projectionMatrix() * *matrix();
+    m.scale(1 / m_dpr);
+    m_program->setUniformValue(m_mvpLoc, m);
     m_program->setUniformValue(m_opacityLoc, float(inheritedOpacity()));
 
     for (const FrameDesc::CmdListEntry &e : m_frameDesc.cmdList) {
@@ -279,6 +281,7 @@ QSGNode *ImGuiItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeDa
     n->m_scenePixelPosBottomLeft = QPointF(sceneTopLeft.x(), w->height() - (sceneTopLeft.y() + height())) * m_dpr;
     n->m_pixelSize = size() * m_dpr;
     n->m_itemSize = size();
+    n->m_dpr = m_dpr;
     n->m_frameDesc = m_frameDesc;
 
     n->markDirty(QSGNode::DirtyMaterial);
@@ -364,6 +367,7 @@ void ImGuiItem::updatePolish()
     ImGuiIO &io = ImGui::GetIO();
     io.DisplaySize.x = width() * m_dpr;
     io.DisplaySize.y = height() * m_dpr;
+    io.DisplayFramebufferScale = ImVec2(m_dpr, m_dpr);
 
     updateInput();
 
