@@ -204,7 +204,6 @@ void ImGuiRenderer::render(const RenderState *state)
 
     m_program->bind();
     QMatrix4x4 m = *state->projectionMatrix() * *matrix();
-    m.scale(1 / m_dpr);
     m_program->setUniformValue(m_mvpLoc, m);
     m_program->setUniformValue(m_opacityLoc, float(inheritedOpacity()));
 
@@ -217,11 +216,11 @@ void ImGuiRenderer::render(const RenderState *state)
         setupVertAttrs();
 
         for (const FrameDesc::Cmd &cmd : e.cmds) {
-            qreal sx = cmd.scissorBottomLeft.x() + m_scenePixelPosBottomLeft.x();
-            qreal sy = cmd.scissorBottomLeft.y() + m_scenePixelPosBottomLeft.y();
-            qreal sw = qMin(cmd.scissorSize.width(), m_pixelSize.width());
-            qreal sh = qMin(cmd.scissorSize.height(), m_pixelSize.height());
-            if (state->scissorEnabled()) { // when the item has clip: true
+            qreal sx = cmd.scissorPixelBottomLeft.x() + m_scenePixelPosBottomLeft.x();
+            qreal sy = cmd.scissorPixelBottomLeft.y() + m_scenePixelPosBottomLeft.y();
+            qreal sw = qMin(cmd.scissorPixelSize.width(), m_itemPixelSize.width());
+            qreal sh = qMin(cmd.scissorPixelSize.height(), m_itemPixelSize.height());
+            if (state->scissorEnabled()) { // when the item or an ancestor has clip: true
                 const QRectF r = state->scissorRect(); // bottom-left already
                 sx = qMax(sx, r.x());
                 sy = qMax(sy, r.y());
@@ -279,7 +278,7 @@ QSGNode *ImGuiItem::updatePaintNode(QSGNode *node, QQuickItem::UpdatePaintNodeDa
     const QPointF sceneTopLeft = mapToScene(QPointF(0, 0));
     QQuickWindow *w = window();
     n->m_scenePixelPosBottomLeft = QPointF(sceneTopLeft.x(), w->height() - (sceneTopLeft.y() + height())) * m_dpr;
-    n->m_pixelSize = size() * m_dpr;
+    n->m_itemPixelSize = size() * m_dpr;
     n->m_itemSize = size();
     n->m_dpr = m_dpr;
     n->m_frameDesc = m_frameDesc;
@@ -365,8 +364,8 @@ void ImGuiItem::updatePolish()
     m_dpr = m_w->effectiveDevicePixelRatio();
 
     ImGuiIO &io = ImGui::GetIO();
-    io.DisplaySize.x = width() * m_dpr;
-    io.DisplaySize.y = height() * m_dpr;
+    io.DisplaySize.x = width();
+    io.DisplaySize.y = height();
     io.DisplayFramebufferScale = ImVec2(m_dpr, m_dpr);
 
     updateInput();
@@ -376,8 +375,7 @@ void ImGuiItem::updatePolish()
     ImGui::Render();
 
     ImDrawData *d = ImGui::GetDrawData();
-    //float effectiveScale = 1; // ###
-    //d->ScaleClipRects(ImVec2(effectiveScale, effectiveScale));
+    d->ScaleClipRects(ImVec2(m_dpr, m_dpr)); // so cmd->ClipRect is now in pixels
 
     m_frameDesc.cmdList.clear();
 
@@ -398,8 +396,8 @@ void ImGuiItem::updatePolish()
                 qcmd.elemCount = cmd->ElemCount;
                 qcmd.indexOffset = indexBufOffset;
 
-                qcmd.scissorBottomLeft = QPointF(cmd->ClipRect.x, io.DisplaySize.y - cmd->ClipRect.w);
-                qcmd.scissorSize = QSizeF(cmd->ClipRect.z - cmd->ClipRect.x, cmd->ClipRect.w - cmd->ClipRect.y);
+                qcmd.scissorPixelBottomLeft = QPointF(cmd->ClipRect.x, io.DisplaySize.y * m_dpr - cmd->ClipRect.w);
+                qcmd.scissorPixelSize = QSizeF(cmd->ClipRect.z - cmd->ClipRect.x, cmd->ClipRect.w - cmd->ClipRect.y);
 
                 qcmd.textureIndex = uint(reinterpret_cast<quintptr>(cmd->TextureId));
 
@@ -565,7 +563,7 @@ void ImGuiItem::updateInput()
 
     ImGuiInputEventFilter *w = m_inputEventFilter;
 
-    io.MousePos = ImVec2(w->mousePos.x() * m_dpr, w->mousePos.y() * m_dpr);
+    io.MousePos = ImVec2(w->mousePos.x(), w->mousePos.y());
 
     io.MouseDown[0] = w->mouseButtonsDown.testFlag(Qt::LeftButton);
     io.MouseDown[1] = w->mouseButtonsDown.testFlag(Qt::RightButton);

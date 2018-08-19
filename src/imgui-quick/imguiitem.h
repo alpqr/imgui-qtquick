@@ -79,8 +79,8 @@ public:
         struct Cmd {
             uint elemCount;
             const void *indexOffset;
-            QPointF scissorBottomLeft;
-            QSizeF scissorSize;
+            QPointF scissorPixelBottomLeft;
+            QSizeF scissorPixelSize;
             uint textureIndex;
         };
         struct CmdListEntry {
@@ -93,7 +93,7 @@ public:
 
 private:
     QPointF m_scenePixelPosBottomLeft;
-    QSizeF m_pixelSize;
+    QSizeF m_itemPixelSize;
     QSizeF m_itemSize;
     float m_dpr;
     FrameDesc m_frameDesc;
