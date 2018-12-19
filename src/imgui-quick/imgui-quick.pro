@@ -11,6 +11,7 @@ INCLUDEPATH += ../3rdparty/imgui
 SOURCES += \
     ../3rdparty/imgui/imgui.cpp \
     ../3rdparty/imgui/imgui_draw.cpp \
+    ../3rdparty/imgui/imgui_widgets.cpp \
     ../3rdparty/imgui/imgui_demo.cpp \
     imguiitem.cpp
 

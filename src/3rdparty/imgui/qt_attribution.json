@@ -1,0 +1,16 @@
+[
+    {
+        "Id": "imgui",
+        "Name": "Dear ImGui",
+        "QDocModule": "qtrhi",
+        "Description": "Dear ImGui",
+        "QtUsage": "Bloat-free GUI library for in-scene visualization of profiling and debugging data",
+
+        "Homepage": "https://github.com/ocornut/imgui",
+        "Version": "v1.66b",
+        "License": "MIT License",
+        "LicenseId": "MIT",
+        "LicenseFile": "LICENSE.txt",
+        "Copyright": "Copyright (c) 2014-2018 Omar Cornut"
+    }
+]
