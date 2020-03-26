@@ -105,7 +105,7 @@ static const char *fragSrcES2 =
         "varying highp vec2 uv;\n"
         "varying highp vec4 color;\n"
         "void main() {\n"
-        "    vec4 c = color * texture2D(tex, uv);\n"
+        "    highp vec4 c = color * texture2D(tex, uv);\n"
         "    gl_FragColor = vec4(c.rgb, c.a * opacity);\n"
         "}\n";
 
@@ -131,7 +131,7 @@ static const char *fragSrcGL3 =
         "in vec4 color;\n"
         "out vec4 fragColor;\n"
         "void main() {\n"
-        "    vec4 c = color * texture(tex, uv);\n"
+        "    highp vec4 c = color * texture(tex, uv);\n"
         "    fragColor = vec4(c.rgb, c.a * opacity);\n"
         "}\n";
 
