@@ -509,6 +509,18 @@ bool ImGuiInputEventFilter::eventFilter(QObject *, QEvent *event)
     }
         break;
 
+    case QEvent::TouchBegin:
+    case QEvent::TouchUpdate:
+    case QEvent::TouchEnd:
+    {
+        QTouchEvent *te = static_cast<QTouchEvent *>(event);
+        mousePos = te->touchPoints().first().pos();
+        mouseButtonsDown = te->touchPoints().first().state() == Qt::TouchPointReleased
+                ? Qt::NoButton : Qt::LeftButton;
+        modifiers = Qt::NoModifier;
+    }
+        break;
+
     default:
         break;
     }
